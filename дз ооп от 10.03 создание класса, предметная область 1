@@ -1,0 +1,215 @@
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Book {
+private:
+    // Поля класса
+    string title;       // название книги
+    string author;      // автор
+    double price;       // цена (в руб.)
+    int quantity;       // количество экземпляров в наличии
+
+public:
+    // Конструктор по умолчанию
+    Book() {
+        title = "Неизвестно";
+        author = "Неизвестно";
+        price = 0.0;
+        quantity = 0;
+    }
+
+    // Конструктор с параметрами
+    Book(string t, string a, double p, int q) {
+        title = t;
+        author = a;
+        // Валидация цены при создании
+        if (p >= 0) {
+            price = p;
+        }
+        else {
+            price = 0;
+            cout << "Цена не может быть отрицательной. Установлена 0." << endl;
+        }
+        // Валидация количества при создании
+        if (q >= 0) {
+            quantity = q;
+        }
+        else {
+            quantity = 0;
+            cout << "Количество не может быть отрицательным. Установлено 0." << endl;
+        }
+    }
+
+    // Деструктор
+    ~Book() {
+        cout << "Книга \"" << title << "\" удалена из каталога." << endl;
+    }
+
+    // Геттеры
+    string getTitle() {
+        return title;
+    }
+
+    string getAuthor() {
+        return author;
+    }
+
+    // Сеттеры с валидацией
+    void setPrice(double newPrice) {
+        if (newPrice >= 0) {
+            price = newPrice;
+            cout << "Цена изменена на " << price << " руб." << endl;
+        }
+        else {
+            cout << "Ошибка: цена не может быть отрицательной." << endl;
+        }
+    }
+
+    void setQuantity(int newQuantity) {
+        if (newQuantity >= 0) {
+            quantity = newQuantity;
+            cout << "Количество изменено на " << quantity << " шт." << endl;
+        }
+        else {
+            cout << "Ошибка: количество не может быть отрицательным." << endl;
+        }
+    }
+
+    // Продажа одного экземпляра
+    void sellCopy() {
+        if (quantity > 0) {
+            quantity--;
+            cout << "Один экземпляр книги \"" << title << "\" продан." << endl;
+        }
+        else {
+            cout << "Книги \"" << title << "\" нет в наличии." << endl;
+        }
+    }
+
+    // Поступление партии
+    void receiveStock(int additionalQuantity) {
+        if (additionalQuantity > 0) {
+            quantity += additionalQuantity;
+            cout << "Поступило " << additionalQuantity << " экз. книги \"" << title << "\"." << endl;
+        }
+        else {
+            cout << "Ошибка: количество поступления должно быть положительным." << endl;
+        }
+    }
+
+    // Применение скидки к цене
+    void applyDiscount(double percent) {
+        if (percent > 0 && percent <= 100) {
+            double discountAmount = price * (percent / 100);
+            price -= discountAmount;
+            cout << "Применена скидка " << percent << "%. Новая цена: " << price << " руб." << endl;
+        }
+        else {
+            cout << "Ошибка: скидка должна быть в диапазоне (0..100]." << endl;
+        }
+    }
+
+    // Метод вывода информации о книге
+    void printInfo() {
+        cout << "===================================" << endl;
+        cout << "Название:  " << title << endl;
+        cout << "Автор:     " << author << endl;
+        cout << "Цена:      " << price << " руб." << endl;
+        cout << "В наличии: " << quantity << " шт." << endl;
+        cout << "===================================" << endl;
+    }
+};
+
+int main() {
+    setlocale(0, "Russian");
+
+    // Создание объектов
+    // Объект 1: конструктор с параметрами
+    Book book1("Война и мир", "Лев Толстой", 1200.50, 10);
+
+    // Объект 2: конструктор по умолчанию
+    Book book2;
+
+    // Демонстрация работы всех публичных методов
+
+    // Работа с book1
+    cout << "\nИнформация о book1" << endl;
+    book1.printInfo();
+
+    // Продажа одного экземпляра
+    cout << "\nПродажа экземпляра book1" << endl;
+    book1.sellCopy();
+    book1.printInfo();
+
+    // Поступление новой партии
+    cout << "\nПоступление партии book1" << endl;
+    book1.receiveStock(5);
+    book1.printInfo();
+
+    // Применение скидки
+    cout << "\nПрименение скидки к book1" << endl;
+    book1.applyDiscount(15);
+    book1.printInfo();
+
+    // Демонстрация геттеров
+    cout << "\nГеттеры book1" << endl;
+    cout << "Название (геттер): " << book1.getTitle() << endl;
+    cout << "Автор (геттер): " << book1.getAuthor() << endl;
+
+    // Демонстрация сеттеров с корректными данными
+    cout << "\nСеттеры book1" << endl;
+    book1.setPrice(1300.0);
+    book1.setQuantity(10);
+    book1.printInfo();
+
+    //Работа с book2 (конструктор по умолчанию)
+    cout << "\nИнформация о book2" << endl;
+    book2.printInfo();
+
+    // Установка значений через сеттеры
+    cout << "\nУстановка данных для book2 через сеттеры" << endl;
+    book2.setPrice(645.0);
+    book2.setQuantity(2);
+    // Название и автор пока не заданы — можно дополнить
+    // (для простоты примера оставим как есть, но можно добавить сеттеры для title/author)
+
+    // Продажа экземпляра book2
+    cout << "\nПродажа экземпляра book2" << endl;
+    book2.sellCopy();
+    book2.printInfo();
+
+    //Демонстрация валидации
+
+    cout << "\nДемонстрация валидации" << endl;
+
+    // Попытка установить отрицательную цену
+    cout << "\nПопытка установить отрицательную цену (book1)" << endl;
+    book1.setPrice(-700);
+
+    // Попытка установить отрицательное количество
+    cout << "\nПопытка установить отрицательное количество (book1)" << endl;
+    book1.setQuantity(-9);
+
+    // Попытка продать, когда нет в наличии (создадим временную ситуацию)
+    cout << "\nПопытка продать книгу с нулевым остатком" << endl;
+    Book book3("Редкая книга", "Автор", 675, 0);
+    book3.sellCopy(); // должно вывести сообщение об отсутствии
+
+    // Попытка применить некорректную скидку (>100%)
+    cout << "\nПопытка применить скидку 180%" << endl;
+    book1.applyDiscount(180);
+
+    // Попытка применить отрицательную скидку
+    cout << "\nПопытка применить скидку -10%" << endl;
+    book1.applyDiscount(-10);
+
+    // Попытка поступления с отрицательным количеством
+    cout << "\nПопытка поступления с отрицательным количеством" << endl;
+    book1.receiveStock(-7);
+
+    cout << "\nПрограмма завершена. Деструкторы будут вызваны автоматически" << endl;
+
+    return 0;
+}
